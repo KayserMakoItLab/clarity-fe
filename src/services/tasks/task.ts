@@ -7,8 +7,6 @@ class TasksService extends ApiService {
   };
 
   getTaskById = (task_id: string) => {
-    console.log("task_id", task_id);
-    
     return this.get(`/tasks/${task_id}`);
   };
 

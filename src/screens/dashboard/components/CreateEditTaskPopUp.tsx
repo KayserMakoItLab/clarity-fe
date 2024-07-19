@@ -114,14 +114,11 @@ const CreateEditTaskPopUp = ({
 
   useEffect(() => {
     if (getTaskByIdData?.data) {
-      console.log("hereree");
-
       setValue("title", getTaskByIdData?.data?.title);
       setValue("description", getTaskByIdData?.data?.description);
       setValue("status", getTaskByIdData?.data?.status);
       setValue("due_date", getTaskByIdData?.data?.due_date);
     } else {
-      console.log("reset hereree");
       reset();
     }
   }, [getTaskByIdData?.data, edit.id]);

@@ -14,7 +14,7 @@ const inter = Inter({ subsets: ["latin"] });
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      refetchOnWindowFocus: false, // Disable automatic refetching on window focus globally
+      refetchOnWindowFocus: false,
     },
   },
 });

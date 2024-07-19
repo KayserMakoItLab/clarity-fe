@@ -114,10 +114,7 @@ const Dashboard = () => {
                       openDelay={500}
                       closeDelay={300}
                     >
-                      <Box
-                        isTruncated
-                        maxW="15rem" // Adjust the width as needed
-                      >
+                      <Box isTruncated maxW="15rem">
                         {item?.title}
                       </Box>
                     </Tooltip>
@@ -129,10 +126,7 @@ const Dashboard = () => {
                       openDelay={500}
                       closeDelay={300}
                     >
-                      <Box
-                        isTruncated
-                        maxW="15rem" // Adjust the width as needed
-                      >
+                      <Box isTruncated maxW="15rem">
                         {item?.description}
                       </Box>
                     </Tooltip>
