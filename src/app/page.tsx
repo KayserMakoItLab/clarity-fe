@@ -1,3 +1,6 @@
+"use client";
+import { Dashboard } from "@/screens";
+
 export default function Home() {
-  return <div>Dashboard page</div>;
+  return <Dashboard />;
 }
