@@ -33,7 +33,7 @@ async function fetchData() {
         redirect: true,
         callbackUrl: "/login",
       });
-      //Cookies.remove(ACCESS_TOKEN_COOKIE);
+      Cookies.remove(ACCESS_TOKEN_COOKIE);
       //Cookies.remove(REFRESH_TOKEN_COOKIE);
     }
     throw error;

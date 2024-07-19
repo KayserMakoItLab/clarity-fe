@@ -1,20 +1,28 @@
 import ApiService from "../api";
-import { LoginTypes } from "./types";
+import { LoginTypes, createTaskType } from "./types";
 
 class TasksService extends ApiService {
+  getAllTasks = (page: string) => {
+    return this.get(`/tasks?page=${page}`);
+  };
 
-  getAllTasks = () => {
-    return this.get(`/tasks`);
-  }
-
-  // signIn = (body: LoginTypes) => {
-  //   console.log("body", body);
+  getTaskById = (task_id: string) => {
+    console.log("task_id", task_id);
     
-  //   return this.post("/login", {
-  //     email: body.email,
-  //     password: body.password,
-  //   });
-  // };
+    return this.get(`/tasks/${task_id}`);
+  };
+
+  createTask = (payload: createTaskType) => {
+    return this.post("/tasks", payload);
+  };
+
+  editTaskById = (task_id:string, payload: createTaskType) => {
+    return this.put(`/tasks/${task_id}`, payload);
+  };
+
+  deleteTask = (task_id: string) => {
+    return this.delete(`/tasks/${task_id}`);
+  };
 }
 
 const taskService = new TasksService();

@@ -14,6 +14,7 @@ import {
   FormControl,
   FormHelperText,
   InputRightElement,
+  Text,
 } from "@chakra-ui/react";
 import { signIn, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
@@ -104,9 +105,12 @@ const Login = () => {
                   <Input
                     type="email"
                     placeholder="email address"
-                    {...register("email")}
+                    {...register("email", { required: "Email is required" })}
                   />
                 </InputGroup>
+                <Text color={"red"} fontSize={"14px"} ml={"4px"}>
+                  {errors.email ? errors.email.message : ""}
+                </Text>
               </FormControl>
               <FormControl>
                 <InputGroup>
@@ -118,7 +122,9 @@ const Login = () => {
                   <Input
                     type={showPassword ? "text" : "password"}
                     placeholder="Password"
-                    {...register("password")}
+                    {...register("password", {
+                      required: "Password is required",
+                    })}
                   />
                   <InputRightElement width="4.5rem">
                     <Button h="1.75rem" size="sm" onClick={handleShowClick}>
@@ -126,9 +132,9 @@ const Login = () => {
                     </Button>
                   </InputRightElement>
                 </InputGroup>
-                {/* <FormHelperText textAlign="right">
-                  <Link>forgot password?</Link>
-                </FormHelperText> */}
+                <Text color={"red"} fontSize={"14px"} ml={"4px"}>
+                  {errors.password ? errors.password.message : ""}
+                </Text>
               </FormControl>
               <Button
                 borderRadius={0}

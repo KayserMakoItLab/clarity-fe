@@ -15,21 +15,80 @@ import {
   Heading,
   HStack,
   Text,
+  VStack,
+  Tooltip,
 } from "@chakra-ui/react";
+import { CreateEditTaskPopUp, DeletePopUp } from "./components";
+import { useState } from "react";
+import { DeleteIcon, EditIcon } from "@chakra-ui/icons";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 const Dashboard = () => {
-  const { useGetAllTasks } = useTasks();
-  const { data: getAllTaskData } = useGetAllTasks();
+  const searchParams = useSearchParams();
+  const pathname = usePathname();
+  const router = useRouter();
+  const currentPage = searchParams.get("page") || "1";
+  const [page, setPage] = useState(+currentPage);
+  const [openPopUp, setOpenPopUp] = useState(false);
+  const [editMode, setEditMode] = useState({
+    id: "",
+    status: false,
+  });
+  const [openDeletePopUp, setOpenDeletePopUp] = useState({
+    id: "",
+    status: false,
+  });
 
-  console.log("getAllTaskData", getAllTaskData);
+  const { useGetAllTasks } = useTasks();
+  const { data: getAllTaskData } = useGetAllTasks(`${page}`);
+
+  const handlePreviousPage = () => {
+    if (getAllTaskData?.data && getAllTaskData?.data?.prev_page_url) {
+      const newPage = +page - 1;
+      setPage(newPage);
+      const query = page ? `?page=${newPage}` : "";
+      router.push(`${pathname}${query}`);
+    }
+  };
+
+  const handleNextPage = () => {
+    if (getAllTaskData?.data && getAllTaskData?.data?.next_page_url) {
+      const newPage = +page + 1;
+      setPage(newPage);
+      const query = page ? `?page=${newPage}` : "";
+      router.push(`${pathname}${query}`);
+    }
+  };
 
   return (
     <Stack flexDir={"column"} padding={"1.5rem"} w={"100%"} h={"100%"} gap={0}>
-      <Heading fontSize={"1.5rem"} color="black.400" mb={"1rem"}>
-        Dashboard
-      </Heading>
+      {(openPopUp || editMode.status) && (
+        <CreateEditTaskPopUp
+          close={setOpenPopUp}
+          edit={editMode}
+          closeEdit={setEditMode}
+        />
+      )}
+      {openDeletePopUp.status && (
+        <DeletePopUp close={setOpenDeletePopUp} id={openDeletePopUp.id} />
+      )}
+      <HStack mb={"1rem"} justifyContent={"space-between"}>
+        <Heading fontSize={"1.5rem"} color="black.400">
+          Dashboard
+        </Heading>
+        <Button
+          colorScheme="teal"
+          size="md"
+          onClick={() => {
+            setOpenPopUp(!openPopUp);
+            setEditMode({ id: "", status: false });
+          }}
+        >
+          Create Task
+        </Button>
+      </HStack>
       <Stack borderTopRadius={"0.5rem"} bgColor={"white"}>
-        <Heading fontSize={"1rem"} color="black.400" p={"1rem"}>
+        <Heading fontSize={"1rem"} color="black.400" p={"0.8rem"}>
           Users
         </Heading>
       </Stack>
@@ -37,46 +96,101 @@ const Dashboard = () => {
         <Table variant="simple">
           <Thead bgColor={"gray.100"}>
             <Tr>
-              <Th>To convert</Th>
-              <Th>into</Th>
-              <Th isNumeric>multiply by</Th>
+              <Th>Title</Th>
+              <Th>Description</Th>
+              <Th>Status</Th>
+              <Th>Due Date</Th>
+              <Th>Actions</Th>
             </Tr>
           </Thead>
           <Tbody>
-            <Tr>
-              <Td>inches</Td>
-              <Td>millimetres (mm)</Td>
-              <Td isNumeric>25.4</Td>
-            </Tr>
-            <Tr>
-              <Td>feet</Td>
-              <Td>centimetres (cm)</Td>
-              <Td isNumeric>30.48</Td>
-            </Tr>
-            <Tr>
-              <Td>yards</Td>
-              <Td>metres (m)</Td>
-              <Td isNumeric>0.91444</Td>
-            </Tr>
+            {getAllTaskData?.data &&
+              getAllTaskData?.data?.data?.map((item: any) => (
+                <Tr maxH={"2rem"}>
+                  <Td>
+                    <Tooltip
+                      label={item?.title}
+                      aria-label="Full title"
+                      openDelay={500}
+                      closeDelay={300}
+                    >
+                      <Box
+                        isTruncated
+                        maxW="15rem" // Adjust the width as needed
+                      >
+                        {item?.title}
+                      </Box>
+                    </Tooltip>
+                  </Td>
+                  <Td>
+                    <Tooltip
+                      label={item?.description}
+                      aria-label="Full Description"
+                      openDelay={500}
+                      closeDelay={300}
+                    >
+                      <Box
+                        isTruncated
+                        maxW="15rem" // Adjust the width as needed
+                      >
+                        {item?.description}
+                      </Box>
+                    </Tooltip>
+                  </Td>
+                  <Td>{item?.status}</Td>
+                  <Td>{item?.due_date}</Td>
+                  <Td ml={"1rem"}>
+                    <EditIcon
+                      cursor={"pointer"}
+                      onClick={() =>
+                        setEditMode({ id: item?.id, status: true })
+                      }
+                    />
+                    <DeleteIcon
+                      ml={"1rem"}
+                      cursor={"pointer"}
+                      color={"red.500"}
+                      onClick={() =>
+                        setOpenDeletePopUp({
+                          id: item?.id,
+                          status: true,
+                        })
+                      }
+                    />
+                  </Td>
+                </Tr>
+              ))}
           </Tbody>
         </Table>
       </TableContainer>
       <Stack
-        justifyContent={"space-between"}
+        justifyContent={"end"}
         alignItems={"center"}
         flexDir={"row"}
         bgColor={"white"}
         p={"1rem"}
         borderBottomRadius={"0.5rem"}
       >
-        <Box color={"gray"} fontSize={"0.9rem"}>
+        {/* <Box color={"gray"} fontSize={"0.9rem"}>
           Showing 1 to 5 of 42 results
-        </Box>
+        </Box> */}
         <HStack gap={"0.5rem"}>
-          <Button w={"6rem"} colorScheme="teal" variant="outline">
+          <Button
+            w={"6rem"}
+            colorScheme="teal"
+            variant="outline"
+            onClick={handlePreviousPage}
+            isDisabled={!getAllTaskData?.data?.prev_page_url}
+          >
             Previous
           </Button>
-          <Button w={"6rem"} colorScheme="teal" variant="outline">
+          <Button
+            w={"6rem"}
+            colorScheme="teal"
+            variant="outline"
+            onClick={handleNextPage}
+            isDisabled={!getAllTaskData?.data?.next_page_url}
+          >
             Next
           </Button>
         </HStack>

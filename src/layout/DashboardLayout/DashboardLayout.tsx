@@ -7,17 +7,15 @@ import {
   Flex,
   Heading,
   Popover,
-  PopoverArrow,
   PopoverBody,
   PopoverCloseButton,
   PopoverContent,
-  PopoverFooter,
-  PopoverHeader,
   PopoverTrigger,
   Portal,
   Stack,
   Text,
 } from "@chakra-ui/react";
+import { signOut } from "next-auth/react";
 
 const DashboardLayout = ({
   children,
@@ -81,7 +79,12 @@ const DashboardLayout = ({
                   <Text fontWeight={"600"} fontSize={"18px"}>
                     Hi, User!
                   </Text>
-                  <Button w={"100%"} mt={"0.4rem"} colorScheme="teal">
+                  <Button
+                    w={"100%"}
+                    mt={"0.4rem"}
+                    colorScheme="teal"
+                    onClick={() => signOut()}
+                  >
                     Logout
                   </Button>
                 </PopoverBody>
