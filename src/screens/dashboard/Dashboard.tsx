@@ -7,15 +7,11 @@ import {
   Th,
   Td,
   TableContainer,
-  TableCaption,
-  Tfoot,
   Stack,
   Box,
   Button,
   Heading,
   HStack,
-  Text,
-  VStack,
   Tooltip,
 } from "@chakra-ui/react";
 import { CreateEditTaskPopUp, DeletePopUp } from "./components";
